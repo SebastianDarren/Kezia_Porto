@@ -4,8 +4,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "python3 -m http.server 8000",
-    "build": "node -e \"console.log('Static website ready for deployment')\"",
-    "start": "python3 -m http.server 8000"
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
   }
 }
