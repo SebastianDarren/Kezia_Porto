@@ -1,0 +1,11 @@
+
+{
+  "name": "kezia-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "build": "node -e \"console.log('Static website ready for deployment')\"",
+    "start": "python3 -m http.server 8000"
+  }
+}
