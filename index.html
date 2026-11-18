@@ -2,65 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Portfolio – Create by Kezi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Create by Kezia — Kezia Valerine, portfolio</title>
+<meta name="description" content="A menu of visual dishes by Kezia Valerine: illustration, branding, UI design, photography and 3D.">
+<meta name="theme-color" content="#171110">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23c4472f'/%3E%3Cpath d='M22 14v36M44 14L24 33l21 17' fill='none' stroke='%23ece1cc' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Londrina+Solid:wght@400;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..800,0..100,0..1;1,9..144,300..800,0..100,0..1&family=Instrument+Sans:wght@400..600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="top">
-  <a class="brand" href="#home" aria-label="Home"><img src="assets/logo.jpg" alt="Create by Kezi"></a>
-  <nav aria-label="Pages">
-    <a href="#home" data-i="0">Home</a>
-    <a href="#about" data-i="1">About</a>
-    <a href="#project" data-i="2">Project</a>
-    <a href="#contact" data-i="3">Contact</a>
+<a class="skip" href="#app">Skip to content</a>
+<div class="glow" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader-logo"><img src="img/logo.png" alt=""></div>
+  <div class="loader-bar"><i></i></div>
+</div>
+
+<header class="bar" id="bar">
+  <a class="brand" href="#/" aria-label="Create by Kezia, home"><img src="img/logo.png" alt="Create by Kezia"></a>
+  <nav aria-label="Main">
+    <a href="#/menu" data-nav="menu">Menu</a>
+    <a href="#/about" data-nav="about">About</a>
+    <a href="#/contact" data-nav="contact">Contact</a>
   </nav>
 </header>
 
-<main class="stage" id="stage">
-  <section class="slide" data-name="home" aria-label="Cover">
-    <img src="assets/cover.jpg" alt="Portfolio cover">
-    <button class="btn hot" style="left:60%;top:76%" data-go="1">Enter portfolio</button>
-  </section>
+<main id="app" tabindex="-1"></main>
 
-  <section class="slide" data-name="about" aria-label="About">
-    <img src="assets/about.jpg" alt="Apps developers: about me">
-    <button class="btn hot" style="left:48.3%;top:61%" id="openPhoto">Meet me</button>
-    <a class="tool hot" style="left:67.8%" href="https://www.adobe.com/products/photoshop.html" target="_blank" rel="noopener" data-tip="Photoshop" aria-label="Photoshop"></a>
-    <a class="tool hot" style="left:74.2%" href="https://www.adobe.com/products/illustrator.html" target="_blank" rel="noopener" data-tip="Illustrator" aria-label="Illustrator"></a>
-    <a class="tool hot" style="left:80.6%" href="https://www.figma.com" target="_blank" rel="noopener" data-tip="Figma" aria-label="Figma"></a>
-    <a class="tool hot" style="left:87.1%" href="https://www.blender.org" target="_blank" rel="noopener" data-tip="Blender" aria-label="Blender"></a>
-    <a class="tool hot" style="left:93.6%" href="https://www.canva.com" target="_blank" rel="noopener" data-tip="Canva" aria-label="Canva"></a>
-  </section>
+<div class="wipe" id="wipe" aria-hidden="true"><img src="img/logo.png" alt=""></div>
+<div class="peek" id="peek" aria-hidden="true"></div>
 
-  <section class="slide" data-name="project" aria-label="UI design project">
-    <img src="assets/project.jpg" alt="UI Design: Selerine digital banking app concept">
-    <div class="hot" style="left:48.4%;width:46.7%;top:83%;text-align:center">
-    <a class="btn" href="https://selerine.vercel.app" target="_blank" rel="noopener">Visit website</a>
-    </div>
-  </section>
-
-  <section class="slide" data-name="contact" aria-label="Contact">
-    <img src="assets/contact.jpg" alt="Thank you">
-    <a class="link hot" style="left:34%;top:56.8%;width:32%;height:3.6%" href="mailto:createbykezia@gmail.com" aria-label="Email createbykezia@gmail.com"></a>
-    <a class="link hot" style="left:36.5%;top:60.4%;width:27%;height:3.6%" href="https://www.instagram.com/vale.portofolio" target="_blank" rel="noopener" aria-label="Instagram vale.portofolio"></a>
-    <button class="btn hot" style="left:0;right:0;margin:0 auto;width:fit-content;top:70%" id="copyMail">Copy email</button>
-  </section>
-</main>
-
-<footer class="dock">
-  <button class="arrow" id="prev" aria-label="Previous page">&#8592;</button>
-  <div class="dots" id="dots"></div>
-  <button class="arrow" id="next" aria-label="Next page">&#8594;</button>
-</footer>
-
-<div class="modal" id="photoModal" role="dialog" aria-modal="true" aria-label="Photo" hidden>
-  <div class="frame"><img src="assets/photo.jpg" alt="Portrait"><button class="btn close" data-close>Close</button></div>
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button class="lb-x" id="lbClose" aria-label="Close">&times;</button>
+  <button class="lb-nav lb-prev" id="lbPrev" aria-label="Previous image">&larr;</button>
+  <figure class="lb-fig"><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+  <button class="lb-nav lb-next" id="lbNext" aria-label="Next image">&rarr;</button>
 </div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script type="module" src="script.js"></script>
+<script type="module" src="main.js"></script>
 </body>
 </html>
