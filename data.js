@@ -4,7 +4,11 @@ export const LINKEDIN = 'https://www.linkedin.com/in/kezia-valerine-793673411/';
 export const INSTAGRAM = 'https://www.instagram.com/vale.portofolio';
 export const EMAIL = 'createbykezia@gmail.com';
 
-const seq = (prefix, n) => Array.from({ length: n }, (_, i) => `${prefix}-${String(i + 1).padStart(2, '0')}`);
+const seq = (prefix, n) =>
+  Array.from(
+    { length: n },
+    (_, i) => `${prefix}-${String(i + 1).padStart(2, '0')}`,
+  );
 
 export const courses = [
   { id: 'starters', name: 'Starters', note: 'to begin with' },
@@ -36,7 +40,10 @@ export const dishes = [
       ratio: 865 / 610,
       items: seq('gelang', 13).map((src, i) => ({
         src,
-        alt: i === 0 ? 'Book cover: Gelang Hera Buah yang Unik' : `Book spread ${i + 1}`,
+        alt:
+          i === 0
+            ? 'Book cover: Gelang Hera Buah yang Unik'
+            : `Book spread ${i + 1}`,
         cap: i === 0 ? 'Cover' : `Spread ${i + 1}`,
       })),
     },
@@ -50,7 +57,12 @@ export const dishes = [
     role: 'Graphic Designer',
     tags: ['Poster', 'Concept', 'Horror'],
     accent: '#c4472f',
-    cover: { src: 'poster-after', fit: 'contain', pos: '50% 50%', bg: 'radial-gradient(120% 90% at 50% 40%, #1d2a24, #0e1512)' },
+    cover: {
+      src: 'poster-after',
+      fit: 'contain',
+      pos: '50% 50%',
+      bg: 'radial-gradient(120% 90% at 50% 40%, #1d2a24, #0e1512)',
+    },
     link: { href: 'https://bit.ly/4v4kI4c', label: 'View publication' },
     desc: [
       'The original poster of Miracle in Cell No. 7 focuses on the love between a father and his daughter. The poster usually uses bright colors and a warm feeling. The characters look happy or emotional, showing the family relationship and touching moments in the movie. The main goal of the original poster is to show that the movie is a sad but heartwarming story about family and love.',
@@ -59,9 +71,18 @@ export const dishes = [
     gallery: {
       type: 'compare',
       title: 'Before & after',
-      before: { src: 'poster-before', alt: 'Original Miracle in Cell No. 7 poster, bright and warm' },
-      after: { src: 'poster-after', alt: 'Redesigned poster with a dark horror theme' },
-      phone: { src: 'poster-phone', alt: 'Redesigned poster shown on a phone held in a hand' },
+      before: {
+        src: 'poster-before',
+        alt: 'Original Miracle in Cell No. 7 poster, bright and warm',
+      },
+      after: {
+        src: 'poster-after',
+        alt: 'Redesigned poster with a dark horror theme',
+      },
+      phone: {
+        src: 'poster-phone',
+        alt: 'Redesigned poster shown on a phone held in a hand',
+      },
     },
   },
   {
@@ -83,8 +104,17 @@ export const dishes = [
     gallery: {
       type: 'phone',
       title: 'What’s on the plate',
-      image: { src: 'selerine-wide', alt: 'Selerine app splash screen on a phone held in a hand' },
-      features: ['Manage money', 'Transfers', 'Pay with QRIS', 'Track expenses', 'Savings goals'],
+      image: {
+        src: 'selerine-wide',
+        alt: 'Selerine app splash screen on a phone held in a hand',
+      },
+      features: [
+        'Manage money',
+        'Transfers',
+        'Pay with QRIS',
+        'Track expenses',
+        'Savings goals',
+      ],
     },
   },
   {
@@ -109,15 +139,51 @@ export const dishes = [
       title: 'The brand book',
       ratio: 1.42,
       items: [
-        { src: 'mayapada-01', alt: 'Logo philosophy slide', cap: 'Filosofi Logo' },
-        { src: 'mayapada-02', alt: 'Visual character slide', cap: 'Karakter Visual' },
-        { src: 'mayapada-03', alt: 'Logo configuration slide', cap: 'Konfigurasi Logo' },
-        { src: 'mayapada-04', alt: 'Logo proportion slide', cap: 'Proporsi Logo' },
-        { src: 'mayapada-05', alt: 'Logo color variations slide', cap: 'Variasi Warna Logo' },
-        { src: 'mayapada-06', alt: 'Identity typography slide', cap: 'Tipografi Identitas' },
-        { src: 'mayapada-07', alt: 'Identity color palette slide', cap: 'Palet Warna Identitas' },
-        { src: 'mayapada-08', alt: 'Stationery and documentation mockups', cap: 'Alat Perkantoran dan Perdokumentasi' },
-        { src: 'mayapada-09', alt: 'Promotional merchandise mockups', cap: 'Cinderamata' },
+        {
+          src: 'mayapada-01',
+          alt: 'Logo philosophy slide',
+          cap: 'Filosofi Logo',
+        },
+        {
+          src: 'mayapada-02',
+          alt: 'Visual character slide',
+          cap: 'Karakter Visual',
+        },
+        {
+          src: 'mayapada-03',
+          alt: 'Logo configuration slide',
+          cap: 'Konfigurasi Logo',
+        },
+        {
+          src: 'mayapada-04',
+          alt: 'Logo proportion slide',
+          cap: 'Proporsi Logo',
+        },
+        {
+          src: 'mayapada-05',
+          alt: 'Logo color variations slide',
+          cap: 'Variasi Warna Logo',
+        },
+        {
+          src: 'mayapada-06',
+          alt: 'Identity typography slide',
+          cap: 'Tipografi Identitas',
+        },
+        {
+          src: 'mayapada-07',
+          alt: 'Identity color palette slide',
+          cap: 'Palet Warna Identitas',
+        },
+        {
+          src: 'mayapada-08',
+          alt: 'Stationery and documentation mockups',
+          cap: 'Alat Perkantoran dan Perdokumentasi',
+        },
+        {
+          src: 'mayapada-09',
+          alt: 'Promotional merchandise mockups',
+          cap: 'Cinderamata',
+        },
       ],
     },
   },
@@ -142,12 +208,36 @@ export const dishes = [
       title: 'Now showing',
       ratio: 1500 / 1064,
       items: [
-        { src: 'campus-01', alt: 'Close-up of a student’s eyes in a cinematic frame', cap: 'Still 1' },
-        { src: 'campus-02', alt: 'Quiet Time Alone: a student praying', cap: 'Quiet Time Alone' },
-        { src: 'campus-03', alt: 'A student working on a laptop in the library', cap: 'Still 3' },
-        { src: 'campus-04', alt: 'Presentation Day: a student studying in the library', cap: 'Presentation Day' },
-        { src: 'campus-05', alt: 'Two friends laughing between classes', cap: 'Still 5' },
-        { src: 'campus-06', alt: 'First Day on Campus: a camera in a hand', cap: 'First Day on Campus' },
+        {
+          src: 'campus-01',
+          alt: 'Close-up of a student’s eyes in a cinematic frame',
+          cap: 'Still 1',
+        },
+        {
+          src: 'campus-02',
+          alt: 'Quiet Time Alone: a student praying',
+          cap: 'Quiet Time Alone',
+        },
+        {
+          src: 'campus-03',
+          alt: 'A student working on a laptop in the library',
+          cap: 'Still 3',
+        },
+        {
+          src: 'campus-04',
+          alt: 'Presentation Day: a student studying in the library',
+          cap: 'Presentation Day',
+        },
+        {
+          src: 'campus-05',
+          alt: 'Two friends laughing between classes',
+          cap: 'Still 5',
+        },
+        {
+          src: 'campus-06',
+          alt: 'First Day on Campus: a camera in a hand',
+          cap: 'First Day on Campus',
+        },
       ],
     },
   },
@@ -171,12 +261,32 @@ export const dishes = [
       type: 'grid',
       title: 'Fresh out of the render',
       items: [
-        { src: 'final-01', alt: 'Tea cup render, blue and white porcelain', w: 2 },
-        { src: 'final-04', alt: 'Catwoman inspired Funko Pop character render', w: 1 },
-        { src: 'final-02', alt: 'Glass tea cup render with a warm drink', w: 1 },
-        { src: 'final-05', alt: 'Funko Pop character beside a duck figure', w: 2 },
+        {
+          src: 'final-01',
+          alt: 'Tea cup render, blue and white porcelain',
+          w: 2,
+        },
+        {
+          src: 'final-04',
+          alt: 'Catwoman inspired Funko Pop character render',
+          w: 1,
+        },
+        {
+          src: 'final-02',
+          alt: 'Glass tea cup render with a warm drink',
+          w: 1,
+        },
+        {
+          src: 'final-05',
+          alt: 'Funko Pop character beside a duck figure',
+          w: 2,
+        },
         { src: 'final-03', alt: 'Tea set render with several cups', w: 2 },
-        { src: 'final-06', alt: 'Character render with soft bokeh lights', w: 1 },
+        {
+          src: 'final-06',
+          alt: 'Character render with soft bokeh lights',
+          w: 1,
+        },
         { src: 'final-07', alt: 'Porcelain tea cup close-up', w: 1 },
         { src: 'final-08', alt: 'Character and lamp composition', w: 2 },
       ],
@@ -185,7 +295,20 @@ export const dishes = [
 ];
 
 export const tools = [
-  'Illustrator', 'Photoshop', 'After Effects', 'Blender', 'Figma', 'Canva', 'CapCut',
+  'Illustrator',
+  'Photoshop',
+  'After Effects',
+  'Blender',
+  'Figma',
+  'Canva',
+  'CapCut',
 ];
 
-export const marquee = ['Illustration', 'Branding', 'UI Design', 'Photography', '3D', 'Poster'];
+export const marquee = [
+  'Illustration',
+  'Branding',
+  'UI Design',
+  'Photography',
+  '3D',
+  'Poster',
+];

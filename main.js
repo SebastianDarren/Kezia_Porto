@@ -1,4 +1,12 @@
-import { dishes, courses, tools, marquee, LINKEDIN, INSTAGRAM, EMAIL } from './data.js';
+import {
+  dishes,
+  courses,
+  tools,
+  marquee,
+  LINKEDIN,
+  INSTAGRAM,
+  EMAIL,
+} from './data.js';
 
 /* ───────── helpers ───────── */
 const $ = (s, r = document) => r.querySelector(s);
@@ -7,17 +15,30 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const esc = (s) =>
+  String(s).replace(
+    /[&<>"']/g,
+    (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[
+        c
+      ],
+  );
 const src = (n) => `img/${n}.webp`;
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-const easeBack = (t) => { const c1 = 1.70158, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); };
+const easeBack = (t) => {
+  const c1 = 1.70158,
+    c3 = c1 + 1;
+  return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+};
 
 const app = $('#app');
 const bar = $('#bar');
 let vh = innerHeight;
 let vw = innerWidth;
 
-const menuOrder = courses.flatMap((c) => dishes.filter((d) => d.course === c.id));
+const menuOrder = courses.flatMap((c) =>
+  dishes.filter((d) => d.course === c.id),
+);
 const numOf = (d) => String(menuOrder.indexOf(d) + 1).padStart(2, '0');
 
 /* ───────── frame loop / teardown ───────── */
@@ -26,7 +47,10 @@ let cleanups = [];
 let io = null;
 const scrub = (fn) => scrubs.push(fn);
 const onCleanup = (fn) => cleanups.push(fn);
-const listen = (t, ev, fn, o) => { t.addEventListener(ev, fn, o); onCleanup(() => t.removeEventListener(ev, fn, o)); };
+const listen = (t, ev, fn, o) => {
+  t.addEventListener(ev, fn, o);
+  onCleanup(() => t.removeEventListener(ev, fn, o));
+};
 
 let lastY = scrollY;
 function frame() {
@@ -40,7 +64,10 @@ function frame() {
   lastY = y;
   requestAnimationFrame(frame);
 }
-addEventListener('resize', () => { vh = innerHeight; vw = innerWidth; });
+addEventListener('resize', () => {
+  vh = innerHeight;
+  vw = innerWidth;
+});
 
 /* ───────── split text + reveal observers ───────── */
 function split(el) {
@@ -52,13 +79,23 @@ function split(el) {
       if (n.nodeType === 3) {
         n.textContent.split(/(\s+)/).forEach((t) => {
           if (!t) return;
-          if (/^\s+$/.test(t)) { frag.append(' '); return; }
-          const w = document.createElement('span'); w.className = 'w'; w.setAttribute('aria-hidden', 'true');
-          const s = document.createElement('span'); s.style.setProperty('--i', i++); s.textContent = t;
-          w.append(s); frag.append(w);
+          if (/^\s+$/.test(t)) {
+            frag.append(' ');
+            return;
+          }
+          const w = document.createElement('span');
+          w.className = 'w';
+          w.setAttribute('aria-hidden', 'true');
+          const s = document.createElement('span');
+          s.style.setProperty('--i', i++);
+          s.textContent = t;
+          w.append(s);
+          frag.append(w);
         });
       } else if (n.nodeType === 1) {
-        const c = n.cloneNode(false); c.append(build(n)); frag.append(c);
+        const c = n.cloneNode(false);
+        c.append(build(n));
+        frag.append(c);
       }
     });
     return frag;
@@ -67,9 +104,17 @@ function split(el) {
 }
 
 function observe() {
-  io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+  io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.14, rootMargin: '0px 0px -6% 0px' },
+  );
   $$('[data-in],[data-reveal],[data-split]').forEach((el) => io.observe(el));
 }
 
@@ -77,9 +122,15 @@ function observe() {
 function words(el) {
   const text = el.textContent.trim();
   el.setAttribute('aria-label', text);
-  el.innerHTML = text.split(/\s+/).map((w) => `<span class="sw" aria-hidden="true">${esc(w)}</span>`).join(' ');
+  el.innerHTML = text
+    .split(/\s+/)
+    .map((w) => `<span class="sw" aria-hidden="true">${esc(w)}</span>`)
+    .join(' ');
   const ws = $$('.sw', el);
-  if (reduce) { ws.forEach((w) => w.classList.add('on')); return; }
+  if (reduce) {
+    ws.forEach((w) => w.classList.add('on'));
+    return;
+  }
   scrub(() => {
     const r = el.getBoundingClientRect();
     const p = clamp((vh * 0.82 - r.top) / (r.height + vh * 0.2));
@@ -94,7 +145,11 @@ function stackCards(items) {
       const nx = items[i + 1];
       if (!nx) return;
       const gap = nx.offsetTop - it.offsetTop;
-      const q = clamp(1 - (nx.getBoundingClientRect().top - it.getBoundingClientRect().top) / gap);
+      const q = clamp(
+        1 -
+          (nx.getBoundingClientRect().top - it.getBoundingClientRect().top) /
+            gap,
+      );
       it.style.setProperty('--q', q.toFixed(3));
       it.style.transform = `scale(${1 - q * 0.06})`;
     });
@@ -106,7 +161,9 @@ function spinBadges() {
   if (!badges.length) return;
   scrub((y) => {
     const t = reduce ? 0 : performance.now() / 1000;
-    badges.forEach((b) => { b.style.transform = `rotate(${t * 9 + y * 0.12}deg)`; });
+    badges.forEach((b) => {
+      b.style.transform = `rotate(${t * 9 + y * 0.12}deg)`;
+    });
   });
 }
 
@@ -117,33 +174,56 @@ function magnetic() {
       const r = b.getBoundingClientRect();
       b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.22}px,${(e.clientY - r.top - r.height / 2) * 0.32}px)`;
     });
-    listen(b, 'pointerleave', () => { b.style.transform = ''; });
+    listen(b, 'pointerleave', () => {
+      b.style.transform = '';
+    });
   });
 }
 
 /* ───────── lightbox ───────── */
-const lb = { el: $('#lb'), img: $('#lbImg'), cap: $('#lbCap'), items: [], i: 0, opener: null };
+const lb = {
+  el: $('#lb'),
+  img: $('#lbImg'),
+  cap: $('#lbCap'),
+  items: [],
+  i: 0,
+  opener: null,
+};
 function lbShow() {
   const it = lb.items[lb.i];
-  lb.img.src = it.src; lb.img.alt = it.alt; lb.cap.textContent = `${it.cap} · ${lb.i + 1} / ${lb.items.length}`;
+  lb.img.src = it.src;
+  lb.img.alt = it.alt;
+  lb.cap.textContent = `${it.cap} · ${lb.i + 1} / ${lb.items.length}`;
 }
 function openLb(items, i, opener) {
-  lb.items = items; lb.i = i; lb.opener = opener; lbShow();
-  lb.el.hidden = false; document.body.classList.add('lock');
+  lb.items = items;
+  lb.i = i;
+  lb.opener = opener;
+  lbShow();
+  lb.el.hidden = false;
+  document.body.classList.add('lock');
   requestAnimationFrame(() => lb.el.classList.add('show'));
   $('#lbClose').focus();
 }
 function closeLb() {
   if (lb.el.hidden) return;
-  lb.el.classList.remove('show'); document.body.classList.remove('lock');
-  setTimeout(() => { lb.el.hidden = true; }, 380);
+  lb.el.classList.remove('show');
+  document.body.classList.remove('lock');
+  setTimeout(() => {
+    lb.el.hidden = true;
+  }, 380);
   if (lb.opener) lb.opener.focus({ preventScroll: true });
 }
-const stepLb = (d) => { lb.i = (lb.i + d + lb.items.length) % lb.items.length; lbShow(); };
+const stepLb = (d) => {
+  lb.i = (lb.i + d + lb.items.length) % lb.items.length;
+  lbShow();
+};
 $('#lbClose').onclick = closeLb;
 $('#lbPrev').onclick = () => stepLb(-1);
 $('#lbNext').onclick = () => stepLb(1);
-lb.el.addEventListener('click', (e) => { if (e.target === lb.el) closeLb(); });
+lb.el.addEventListener('click', (e) => {
+  if (e.target === lb.el) closeLb();
+});
 addEventListener('keydown', (e) => {
   if (lb.el.hidden) return;
   if (e.key === 'Escape') closeLb();
@@ -151,17 +231,27 @@ addEventListener('keydown', (e) => {
   if (e.key === 'ArrowRight') stepLb(1);
 });
 function bindZoom(root, items) {
-  const list = items.map((x) => ({ src: src(x.src), alt: x.alt, cap: x.cap || x.alt }));
+  const list = items.map((x) => ({
+    src: src(x.src),
+    alt: x.alt,
+    cap: x.cap || x.alt,
+  }));
   $$('[data-lb]', root).forEach((el) => {
     const open = () => openLb(list, +el.dataset.lb, el);
     listen(el, 'click', open);
-    listen(el, 'keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    listen(el, 'keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open();
+      }
+    });
   });
 }
 
 /* ───────── shared markup ───────── */
 const ext = 'target="_blank" rel="noopener noreferrer"';
-const meetBtn = (cls = '') => `<a class="btn ${cls}" href="${LINKEDIN}" ${ext}>Meet me <span class="arr">↗</span></a>`;
+const meetBtn = (cls = '') =>
+  `<a class="btn ${cls}" href="${LINKEDIN}" ${ext}>Meet me <span class="arr">↗</span></a>`;
 const spark = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 0c1 8 4 11 12 12-8 1-11 4-12 12-1-8-4-11-12-12 8-1 11-4 12-12z"/></svg>`;
 const badge = () => `
   <div class="badge" aria-hidden="true"><img src="img/icon.webp" alt="" width="640" height="640"></div>`;
@@ -181,7 +271,12 @@ const footer = () => `
 /* ───────── page: home ───────── */
 function home() {
   const picks = menuOrder;
-  const mq = marquee.map((w, i) => `<span class="${i % 2 ? 'o' : ''}">${i % 2 ? w : `<em>${w}</em>`}</span>${spark}`).join('');
+  const mq = marquee
+    .map(
+      (w, i) =>
+        `<span class="${i % 2 ? 'o' : ''}">${i % 2 ? w : `<em>${w}</em>`}</span>${spark}`,
+    )
+    .join('');
   const html = `
   <section class="hero" aria-label="Introduction">
     <div class="hero-pin">
@@ -237,7 +332,9 @@ function home() {
         <a class="btn ghost" href="#/menu" data-reveal>Full menu <span class="arr">→</span></a>
       </div>
       <div class="stack-cards">
-        ${picks.map((d, k) => `
+        ${picks
+          .map(
+            (d, k) => `
         <a class="pick" href="#/dish/${d.slug}" style="--k:${k};--accent:${d.accent}" aria-label="${esc(d.title)}">
           <div class="pick-img"><img src="${src(d.cover.src)}" alt="" loading="lazy" style="object-fit:${d.cover.fit};object-position:${d.cover.pos};${d.cover.bg ? `background:${d.cover.bg}` : ''}"></div>
           <div class="pick-body">
@@ -248,7 +345,9 @@ function home() {
             </div>
             <div class="chips">${d.tags.map((t) => `<span class="chip">${esc(t)}</span>`).join('')}</div>
           </div>
-        </a>`).join('')}
+        </a>`,
+          )
+          .join('')}
       </div>
       <div class="picks-cta"><a class="btn" href="#/menu">See the whole menu <span class="arr">→</span></a></div>
     </div>
@@ -264,7 +363,9 @@ function home() {
   ${footer()}`;
 
   return {
-    html, title: 'Create by Kezia — Kezia Valerine, portfolio', nav: '',
+    html,
+    title: 'Create by Kezia — Kezia Valerine, portfolio',
+    nav: '',
     mount() {
       hero();
       marq($('.marquee'));
@@ -277,14 +378,27 @@ function home() {
 
 function hero() {
   const root = $('.hero');
-  const cl = $('.cloche'), medal = $('.medal'), steam = $('.steam'), stage = $('.stage');
-  const c1 = $('.c1'), c2 = $('.c2'), hint = $('.hint'), sparks = $$('.spark', stage);
+  const cl = $('.cloche'),
+    medal = $('.medal'),
+    steam = $('.steam'),
+    stage = $('.stage');
+  const c1 = $('.c1'),
+    c2 = $('.c2'),
+    hint = $('.hint'),
+    sparks = $$('.spark', stage);
   if (reduce) {
-    cl.style.display = 'none'; medal.style.opacity = 1; steam.style.opacity = 1; sparks.forEach((s) => { s.style.opacity = 1; });
+    cl.style.display = 'none';
+    medal.style.opacity = 1;
+    steam.style.opacity = 1;
+    sparks.forEach((s) => {
+      s.style.opacity = 1;
+    });
     return;
   }
   let hintOn = false;
-  const t = setTimeout(() => { hintOn = true; }, bootMs + 2200);
+  const t = setTimeout(() => {
+    hintOn = true;
+  }, bootMs + 2200);
   onCleanup(() => clearTimeout(t));
   let sp = 0;
   const apply = (p) => {
@@ -293,17 +407,26 @@ function hero() {
     if (p >= 0.004) {
       cl.style.transform = `translate3d(0,${-lift * stage.offsetHeight * 1.05}px,0) rotate(${-lift * 16}deg)`;
       cl.style.opacity = 1 - clamp((lift - 0.72) / 0.28);
-    } else { cl.style.transform = ''; cl.style.opacity = 1; }
+    } else {
+      cl.style.transform = '';
+      cl.style.opacity = 1;
+    }
     const m = easeBack(clamp((p - 0.2) / 0.4));
     medal.style.opacity = clamp((p - 0.18) / 0.12);
     medal.style.transform = `translate3d(0,${(1 - m) * 14}%,0) scale(${0.55 + 0.45 * m})`;
     steam.style.opacity = clamp((p - 0.45) / 0.2);
-    sparks.forEach((s, i) => { const k = clamp((p - 0.42 - i * 0.04) / 0.2); s.style.opacity = k; s.style.transform = `scale(${0.4 + 0.6 * k})`; });
+    sparks.forEach((s, i) => {
+      const k = clamp((p - 0.42 - i * 0.04) / 0.2);
+      s.style.opacity = k;
+      s.style.transform = `scale(${0.4 + 0.6 * k})`;
+    });
     const o1 = 1 - clamp((p - 0.1) / 0.22);
-    c1.style.opacity = o1; c1.style.transform = `translate3d(0,${-(1 - o1) * 44}px,0)`;
+    c1.style.opacity = o1;
+    c1.style.transform = `translate3d(0,${-(1 - o1) * 44}px,0)`;
     c1.style.visibility = o1 < 0.02 ? 'hidden' : '';
     const o2 = clamp((p - 0.5) / 0.22);
-    c2.style.opacity = o2; c2.style.transform = `translate3d(0,${(1 - o2) * 44}px,0)`;
+    c2.style.opacity = o2;
+    c2.style.transform = `translate3d(0,${(1 - o2) * 44}px,0)`;
     hint.style.opacity = hintOn ? 1 - clamp(p / 0.06) : 0;
   };
   apply(0);
@@ -322,12 +445,18 @@ function hero() {
 
 function marq(root) {
   const track = $('.mq-track', root);
-  let x = 0, last = scrollY, v = 0;
+  let x = 0,
+    last = scrollY,
+    v = 0;
   scrub((y) => {
     const w = track.firstElementChild.offsetWidth;
-    v += ((y - last) - v) * 0.12; last = y;
+    v += (y - last - v) * 0.12;
+    last = y;
     x -= reduce ? 0 : 0.8 + v * 0.55;
-    if (w) { while (x < -w) x += w; while (x > 0) x -= w; }
+    if (w) {
+      while (x < -w) x += w;
+      while (x > 0) x -= w;
+    }
     track.style.transform = `translate3d(${x}px,0,0)`;
   });
 }
@@ -345,12 +474,16 @@ function menu() {
         <p class="lead" data-reveal style="--d:250">Six dishes, freshly made between 2025 and 2026. Hover a plate to peek, tap to order.</p>
       </header>
       <div class="menu-list">
-      ${courses.map((c) => `
+      ${courses
+        .map(
+          (c) => `
         <section class="course" aria-label="${c.name}">
           <div class="course-h" data-in><h2>${c.name}</h2><span class="script">${c.note}</span></div>
-          ${dishes.filter((d) => d.course === c.id).map((d) => {
-            const i = n++;
-            return `
+          ${dishes
+            .filter((d) => d.course === c.id)
+            .map((d) => {
+              const i = n++;
+              return `
           <a class="row" href="#/dish/${d.slug}" data-in data-idx="${i}">
             <span class="row-n">${String(i + 1).padStart(2, '0')}</span>
             <img class="row-thumb" src="${src(d.cover.src)}" alt="" loading="lazy" style="object-position:${d.cover.pos}">
@@ -363,37 +496,75 @@ function menu() {
             <span class="row-year">${esc(d.year)}</span>
             <span class="row-go" aria-hidden="true">→</span>
           </a>`;
-          }).join('')}
-        </section>`).join('')}
+            })
+            .join('')}
+        </section>`,
+        )
+        .join('')}
       </div>
       <div class="menu-end"><span class="script">that’s the whole menu</span>Nothing contains nuts. Everything is made with love.</div>
     </div>
     ${footer()}
   </div>`;
   return {
-    html, title: 'The Menu — Create by Kezia', nav: 'menu',
+    html,
+    title: 'The Menu — Create by Kezia',
+    nav: 'menu',
     mount() {
       const peek = $('#peek');
-      peek.innerHTML = menuOrder.map((d) => `<img src="${src(d.cover.src)}" alt="" style="object-fit:cover;object-position:${d.cover.pos}">`).join('');
+      peek.innerHTML = menuOrder
+        .map(
+          (d) =>
+            `<img src="${src(d.cover.src)}" alt="" style="object-fit:cover;object-position:${d.cover.pos}">`,
+        )
+        .join('');
       const imgs = $$('img', peek);
-      onCleanup(() => { peek.classList.remove('on'); peek.innerHTML = ''; });
+      onCleanup(() => {
+        peek.classList.remove('on');
+        peek.innerHTML = '';
+      });
       if (!fine) return;
-      let px = -999, py = 0, tx = -999, ty = 0, ps = 0.3, pt = 0.3, rot = 0, active = -1;
-      listen(document, 'pointermove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
+      let px = -999,
+        py = 0,
+        tx = -999,
+        ty = 0,
+        ps = 0.3,
+        pt = 0.3,
+        rot = 0,
+        active = -1;
+      listen(
+        document,
+        'pointermove',
+        (e) => {
+          tx = e.clientX;
+          ty = e.clientY;
+        },
+        { passive: true },
+      );
       $$('.row').forEach((row) => {
         listen(row, 'pointerenter', () => {
           const i = +row.dataset.idx;
           if (active >= 0) imgs[active].classList.remove('on');
-          imgs[i].classList.add('on'); active = i;
-          peek.classList.add('on'); pt = 1;
-          if (px < -900) { px = tx; py = ty; }
+          imgs[i].classList.add('on');
+          active = i;
+          peek.classList.add('on');
+          pt = 1;
+          if (px < -900) {
+            px = tx;
+            py = ty;
+          }
         });
-        listen(row, 'pointerleave', () => { peek.classList.remove('on'); pt = 0.3; });
+        listen(row, 'pointerleave', () => {
+          peek.classList.remove('on');
+          pt = 0.3;
+        });
       });
       const w = () => peek.offsetWidth;
       scrub(() => {
         const dx = tx - px;
-        px += dx * 0.14; py += (ty - py) * 0.14; ps += (pt - ps) * 0.14;
+        px += dx * 0.14;
+        py += (ty - py) * 0.14;
+        ps += (pt - ps) * 0.14;
         rot += (clamp(dx * 0.06, -14, 14) - rot) * 0.15;
         const size = w();
         const x = Math.min(px + size * 0.55, vw - size * 0.55 - 12);
@@ -420,10 +591,14 @@ function dish(slug) {
       <div class="hs-pin">
         <div class="g-head"><h2 data-split>${esc(g.title)}</h2><div class="hs-ctrl"><p>Swipe sideways, drag or use the arrows · tap to zoom</p><button class="hs-btn" data-hs="-1" aria-label="Previous">←</button><button class="hs-btn" data-hs="1" aria-label="Next">→</button></div></div>
         <div class="hs-track">
-          ${g.items.map((it, i) => `
+          ${g.items
+            .map(
+              (it, i) => `
           <figure class="hs-item zoomable" style="--r:${g.ratio}" data-lb="${i}" tabindex="0" role="button" aria-label="Zoom: ${esc(it.alt)}">
             <img src="${src(it.src)}" alt="${esc(it.alt)}" decoding="async"><figcaption>${esc(it.cap)}</figcaption>
-          </figure>`).join('')}
+          </figure>`,
+            )
+            .join('')}
         </div>
         <div class="hs-bar" aria-hidden="true"><i></i></div>
       </div>
@@ -433,11 +608,15 @@ function dish(slug) {
     <section class="stk" aria-label="${esc(g.title)}">
       <div class="wrap"><div class="g-head"><h2 data-split>${esc(g.title)}</h2><p>Keep scrolling · tap a slide to zoom</p></div></div>
       <div class="stk-wrap"><div class="stk-list">
-        ${g.items.map((it, i) => `
+        ${g.items
+          .map(
+            (it, i) => `
         <div class="stk-item" style="--k:${i};--r:${g.ratio}">
           <figure class="stk-card zoomable" data-lb="${i}" tabindex="0" role="button" aria-label="Zoom: ${esc(it.alt)}"><img src="${src(it.src)}" alt="${esc(it.alt)}" loading="lazy" decoding="async"></figure>
           <div class="stk-cap"><span>${esc(it.cap)}</span><span>${i + 1} / ${g.items.length}</span></div>
-        </div>`).join('')}
+        </div>`,
+          )
+          .join('')}
       </div></div>
     </section>`;
   } else if (g.type === 'grid') {
@@ -445,8 +624,12 @@ function dish(slug) {
     <section class="wrap grd-sec" aria-label="${esc(g.title)}" style="padding-bottom:4vw">
       <div class="g-head"><h2 data-split>${esc(g.title)}</h2><p>Tap a render to zoom</p></div>
       <div class="grd">
-        ${g.items.map((it, i) => `
-        <figure class="grd-item zoomable" data-in style="--w:${it.w};--d:${(i % 3) * 110}" data-lb="${i}" tabindex="0" role="button" aria-label="Zoom: ${esc(it.alt)}"><img src="${src(it.src)}" alt="${esc(it.alt)}" loading="lazy" decoding="async"></figure>`).join('')}
+        ${g.items
+          .map(
+            (it, i) => `
+        <figure class="grd-item zoomable" data-in style="--w:${it.w};--d:${(i % 3) * 110}" data-lb="${i}" tabindex="0" role="button" aria-label="Zoom: ${esc(it.alt)}"><img src="${src(it.src)}" alt="${esc(it.alt)}" loading="lazy" decoding="async"></figure>`,
+          )
+          .join('')}
       </div>
     </section>`;
   } else if (g.type === 'compare') {
@@ -507,7 +690,9 @@ function dish(slug) {
   </article>`;
 
   return {
-    html, title: `${d.title} — Create by Kezia`, nav: 'menu',
+    html,
+    title: `${d.title} — Create by Kezia`,
+    nav: 'menu',
     mount() {
       // cover grows in as you arrive and drifts slowly
       const frame = $('.cover-frame');
@@ -518,7 +703,8 @@ function dish(slug) {
           const e = clamp((vh - r.top) / (vh * 0.75));
           const p = clamp((vh - r.top) / (vh + r.height));
           frame.style.transform = `scale(${0.88 + 0.12 * easeOut(e)})`;
-          if (cover.fit !== 'contain') im.style.transform = `translate3d(0,${(p - 0.5) * -5}%,0) scale(1.12)`;
+          if (cover.fit !== 'contain')
+            im.style.transform = `translate3d(0,${(p - 0.5) * -5}%,0) scale(1.12)`;
         });
       }
       if (g.type === 'hscroll') hscroll($('[data-hs]'));
@@ -541,27 +727,58 @@ function hscroll(root) {
     const max = track.scrollWidth - track.clientWidth;
     const p = max > 0 ? clamp(track.scrollLeft / max) : 0;
     fill.style.transform = `scaleX(${p})`;
-    btns.forEach((b) => { b.disabled = +b.dataset.hs < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2; });
+    btns.forEach((b) => {
+      b.disabled =
+        +b.dataset.hs < 0 ? track.scrollLeft <= 2 : track.scrollLeft >= max - 2;
+    });
   };
   listen(track, 'scroll', sync, { passive: true });
   listen(window, 'resize', sync);
   sync();
 
   // mouse drag (touch and trackpad scroll natively)
-  let down = false, moved = false, startX = 0, startLeft = 0, pid = 0;
+  let down = false,
+    moved = false,
+    startX = 0,
+    startLeft = 0,
+    pid = 0;
   listen(track, 'pointerdown', (e) => {
     if (e.pointerType !== 'mouse' || e.button !== 0) return;
-    down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft; pid = e.pointerId;
+    down = true;
+    moved = false;
+    startX = e.clientX;
+    startLeft = track.scrollLeft;
+    pid = e.pointerId;
   });
   listen(track, 'pointermove', (e) => {
     if (!down) return;
-    if (!moved && Math.abs(e.clientX - startX) > 6) { moved = true; track.setPointerCapture(pid); track.classList.add('drag'); }
+    if (!moved && Math.abs(e.clientX - startX) > 6) {
+      moved = true;
+      track.setPointerCapture(pid);
+      track.classList.add('drag');
+    }
     if (moved) track.scrollLeft = startLeft - (e.clientX - startX);
   });
-  const end = () => { down = false; track.classList.remove('drag'); setTimeout(() => { moved = false; }, 0); };
+  const end = () => {
+    down = false;
+    track.classList.remove('drag');
+    setTimeout(() => {
+      moved = false;
+    }, 0);
+  };
   listen(track, 'pointerup', end);
   listen(track, 'pointercancel', end);
-  listen(track, 'click', (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); } }, true);
+  listen(
+    track,
+    'click',
+    (e) => {
+      if (moved) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    },
+    true,
+  );
 
   // arrows (buttons and keyboard)
   const step = (dir) => {
@@ -573,8 +790,14 @@ function hscroll(root) {
     if (!lb.el.hidden || /input|textarea/i.test(e.target.tagName)) return;
     const r = root.getBoundingClientRect();
     if (r.top > vh * 0.5 || r.bottom < vh * 0.5) return;
-    if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
-    if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      step(1);
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      step(-1);
+    }
   });
 }
 
@@ -584,7 +807,11 @@ function gridParallax(items) {
     items.forEach((el) => {
       const r = el.getBoundingClientRect();
       if (r.bottom < -50 || r.top > vh + 50) return;
-      const off = clamp(((r.top + r.height / 2) - vh / 2) * -0.06, -r.height * 0.05, r.height * 0.05);
+      const off = clamp(
+        (r.top + r.height / 2 - vh / 2) * -0.06,
+        -r.height * 0.05,
+        r.height * 0.05,
+      );
       $('img', el).style.transform = `translate3d(0,${off}px,0)`;
     });
   });
@@ -592,41 +819,82 @@ function gridParallax(items) {
 
 function compare(el) {
   const handle = $('.cmp-handle button', el);
-  let pos = 100, drag = false, raf = 0;
+  let pos = 100,
+    drag = false,
+    raf = 0;
   const set = (v) => {
     pos = clamp(v, 0, 100);
     el.style.setProperty('--pos', `${pos}%`);
     handle.setAttribute('aria-valuenow', Math.round(100 - pos));
   };
-  const fromX = (x) => { const r = el.getBoundingClientRect(); set(((x - r.left) / r.width) * 100); };
-  listen(el, 'pointerdown', (e) => { cancelAnimationFrame(raf); drag = true; el.classList.add('drag'); el.setPointerCapture(e.pointerId); fromX(e.clientX); });
-  listen(el, 'pointermove', (e) => { if (drag) fromX(e.clientX); });
-  ['pointerup', 'pointercancel'].forEach((t) => listen(el, t, () => { drag = false; el.classList.remove('drag'); }));
+  const fromX = (x) => {
+    const r = el.getBoundingClientRect();
+    set(((x - r.left) / r.width) * 100);
+  };
+  listen(el, 'pointerdown', (e) => {
+    cancelAnimationFrame(raf);
+    drag = true;
+    el.classList.add('drag');
+    el.setPointerCapture(e.pointerId);
+    fromX(e.clientX);
+  });
+  listen(el, 'pointermove', (e) => {
+    if (drag) fromX(e.clientX);
+  });
+  ['pointerup', 'pointercancel'].forEach((t) =>
+    listen(el, t, () => {
+      drag = false;
+      el.classList.remove('drag');
+    }),
+  );
   listen(handle, 'keydown', (e) => {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); set(pos - 5); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); set(pos + 5); }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      set(pos - 5);
+    }
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      set(pos + 5);
+    }
   });
   // a little demo sweep the first time it scrolls into view
-  const demo = new IntersectionObserver(([e]) => {
-    if (!e.isIntersecting) return;
-    demo.disconnect();
-    if (reduce) { set(50); return; }
-    const t0 = performance.now();
-    const step = (t) => {
-      if (drag) return;
-      const k = clamp((t - t0) / 1800);
-      set(100 - 50 * easeOut(k));
-      if (k < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-  }, { threshold: 0.45 });
+  const demo = new IntersectionObserver(
+    ([e]) => {
+      if (!e.isIntersecting) return;
+      demo.disconnect();
+      if (reduce) {
+        set(50);
+        return;
+      }
+      const t0 = performance.now();
+      const step = (t) => {
+        if (drag) return;
+        const k = clamp((t - t0) / 1800);
+        set(100 - 50 * easeOut(k));
+        if (k < 1) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    },
+    { threshold: 0.45 },
+  );
   demo.observe(el);
-  onCleanup(() => { demo.disconnect(); cancelAnimationFrame(raf); });
+  onCleanup(() => {
+    demo.disconnect();
+    cancelAnimationFrame(raf);
+  });
 }
 
 /* ───────── page: about ───────── */
 function about() {
-  const cols = ['#d8a548', '#c4472f', '#7c9a77', '#5fa3a6', '#c9704f', '#d8a548', '#c4472f'];
+  const cols = [
+    '#d8a548',
+    '#c4472f',
+    '#7c9a77',
+    '#5fa3a6',
+    '#c9704f',
+    '#d8a548',
+    '#c4472f',
+  ];
   const rots = [-2, 1.5, -1, 2, -1.5, 1, -2];
   const html = `
   <div class="page">
@@ -660,12 +928,22 @@ function about() {
     </section>
     ${footer()}
   </div>`;
-  return { html, title: 'About — Create by Kezia', nav: 'about', mount() { spinBadges(); } };
+  return {
+    html,
+    title: 'About — Create by Kezia',
+    nav: 'about',
+    mount() {
+      spinBadges();
+    },
+  };
 }
 
 /* ───────── page: contact ───────── */
 function contact() {
-  const bars = Array.from({ length: 34 }, (_, i) => `<i style="--i:${i};--h:${40 + ((i * 37) % 60)}"></i>`).join('');
+  const bars = Array.from(
+    { length: 34 },
+    (_, i) => `<i style="--i:${i};--h:${40 + ((i * 37) % 60)}"></i>`,
+  ).join('');
   const html = `
   <div class="page">
     <div class="wrap pg-back"><a class="back" href="#/">← Back to home</a></div>
@@ -699,19 +977,29 @@ function contact() {
     </section>
   </div>`;
   return {
-    html, title: 'Contact — Create by Kezia', nav: 'contact', mount() {},
+    html,
+    title: 'Contact — Create by Kezia',
+    nav: 'contact',
+    mount() {},
   };
 }
 
 const toastEl = $('#toast');
 let toastT;
 function say(msg) {
-  toastEl.textContent = msg; toastEl.classList.add('show');
-  clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('show'), 1800);
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => toastEl.classList.remove('show'), 1800);
 }
 
 /* ───────── router + page transition ───────── */
-const legacy = { '#home': '#/', '#about': '#/about', '#project': '#/menu', '#contact': '#/contact' };
+const legacy = {
+  '#home': '#/',
+  '#about': '#/about',
+  '#project': '#/menu',
+  '#contact': '#/contact',
+};
 const routes = [
   [/^#\/?$/, home],
   [/^#\/menu\/?$/, menu],
@@ -721,16 +1009,24 @@ const routes = [
 ];
 const norm = (h) => legacy[h] || h || '#/';
 function resolve(hash) {
-  for (const [re, fn] of routes) { const m = hash.match(re); if (m) return () => fn(...m.slice(1)); }
+  for (const [re, fn] of routes) {
+    const m = hash.match(re);
+    if (m) return () => fn(...m.slice(1));
+  }
   return home;
 }
 
 let bootMs = 0;
 function render(hash, boot, obsDelay = boot) {
   scrubs = [];
-  cleanups.forEach((f) => f()); cleanups = [];
+  cleanups.forEach((f) => f());
+  cleanups = [];
   if (io) io.disconnect();
-  if (!lb.el.hidden) { lb.el.hidden = true; lb.el.classList.remove('show'); document.body.classList.remove('lock'); }
+  if (!lb.el.hidden) {
+    lb.el.hidden = true;
+    lb.el.classList.remove('show');
+    document.body.classList.remove('lock');
+  }
 
   const page = resolve(hash)();
   app.style.setProperty('--boot', `${boot / 1000}s`);
@@ -740,9 +1036,12 @@ function render(hash, boot, obsDelay = boot) {
   $$('[data-nav]').forEach((a) => {
     const on = a.dataset.nav === page.nav;
     a.classList.toggle('on', on);
-    on ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
+    on
+      ? a.setAttribute('aria-current', 'page')
+      : a.removeAttribute('aria-current');
   });
-  scrollTo(0, 0); lastY = 0;
+  scrollTo(0, 0);
+  lastY = 0;
   $$('[data-split]').forEach(split);
   page.mount();
   magnetic();
@@ -751,28 +1050,50 @@ function render(hash, boot, obsDelay = boot) {
 }
 
 let lastPt = { x: innerWidth / 2, y: innerHeight / 2 };
-document.addEventListener('pointerdown', (e) => {
-  if (e.target.closest('a[href^="#/"]')) lastPt = { x: e.clientX, y: e.clientY };
-}, true);
+document.addEventListener(
+  'pointerdown',
+  (e) => {
+    if (e.target.closest('a[href^="#/"]'))
+      lastPt = { x: e.clientX, y: e.clientY };
+  },
+  true,
+);
 document.addEventListener('click', (e) => {
   const a = e.target.closest('a[href^="#/"]');
   if (!a) return;
-  if (e.detail === 0) { const r = a.getBoundingClientRect(); lastPt = { x: r.left + r.width / 2, y: r.top + r.height / 2 }; }
-  if (norm(a.getAttribute('href')) === norm(location.hash)) { e.preventDefault(); scrollTo({ top: 0, behavior: 'smooth' }); }
+  if (e.detail === 0) {
+    const r = a.getBoundingClientRect();
+    lastPt = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
+  if (norm(a.getAttribute('href')) === norm(location.hash)) {
+    e.preventDefault();
+    scrollTo({ top: 0, behavior: 'smooth' });
+  }
 });
 
 const wipe = $('#wipe');
-let busy = false, queued = null;
+let busy = false,
+  queued = null;
 async function go(hash) {
   hash = norm(hash);
-  if (busy) { queued = hash; return; }
+  if (busy) {
+    queued = hash;
+    return;
+  }
   busy = true;
-  if (reduce) { render(hash, 0); busy = false; return; }
+  if (reduce) {
+    render(hash, 0);
+    busy = false;
+    return;
+  }
   const { x, y } = lastPt;
   const R = Math.hypot(Math.max(x, vw - x), Math.max(y, vh - y)) + 10;
   wipe.style.visibility = 'visible';
   await wipe.animate(
-    [{ clipPath: `circle(0px at ${x}px ${y}px)` }, { clipPath: `circle(${R}px at ${x}px ${y}px)` }],
+    [
+      { clipPath: `circle(0px at ${x}px ${y}px)` },
+      { clipPath: `circle(${R}px at ${x}px ${y}px)` },
+    ],
     { duration: 700, easing: 'cubic-bezier(.7,0,.2,1)', fill: 'forwards' },
   ).finished;
   wipe.classList.add('on');
@@ -786,7 +1107,10 @@ async function go(hash) {
   wipe.getAnimations().forEach((a) => a.cancel());
   wipe.style.visibility = 'hidden';
   busy = false;
-  if (queued && queued !== norm(location.hash)) { queued = null; go(location.hash); } else queued = null;
+  if (queued && queued !== norm(location.hash)) {
+    queued = null;
+    go(location.hash);
+  } else queued = null;
 }
 addEventListener('hashchange', () => go(location.hash));
 
@@ -795,17 +1119,29 @@ history.scrollRestoration = 'manual';
 (async function boot() {
   const loader = $('#loader');
   let seen = false;
-  try { seen = sessionStorage.getItem('kezi-seen') === '1'; } catch { /* storage may be blocked */ }
+  try {
+    seen = sessionStorage.getItem('kezi-seen') === '1';
+  } catch {
+    /* storage may be blocked */
+  }
   const quick = seen || reduce;
   render(norm(location.hash), 0, quick ? 0 : 1500);
   requestAnimationFrame(frame);
   if (quick) {
-    loader.remove(); document.body.classList.add('ready');
+    loader.remove();
+    document.body.classList.add('ready');
     return;
   }
-  await Promise.all([wait(1500), Promise.race([document.fonts ? document.fonts.ready : 0, wait(2500)])]);
+  await Promise.all([
+    wait(1500),
+    Promise.race([document.fonts ? document.fonts.ready : 0, wait(2500)]),
+  ]);
   loader.classList.add('done');
   document.body.classList.add('ready');
-  try { sessionStorage.setItem('kezi-seen', '1'); } catch { /* ignore */ }
+  try {
+    sessionStorage.setItem('kezi-seen', '1');
+  } catch {
+    /* ignore */
+  }
   setTimeout(() => loader.remove(), 1200);
 })();
